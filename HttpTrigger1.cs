@@ -23,7 +23,7 @@ namespace Company.Function
             _logger.LogWarning("WARNING===C# HTTP trigger function processed a request.");
             _logger.LogError("ERROR===C# HTTP trigger function processed a request.");
             _logger.LogCritical("CRITICAL===C# HTTP trigger function processed a request.");
-            return new OkObjectResult("Welcome to Azure Functions!");
+            return new OkObjectResult("Hello and Welcome to Azure Functions!");
         }
     }
 }

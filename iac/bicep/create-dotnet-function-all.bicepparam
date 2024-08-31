@@ -1,0 +1,11 @@
+using './create-dotnet-function-all.bicep'
+
+param subscriptionId = 'subscriptionId'
+param rgName = 'rgName'
+param location = 'location'
+param aspName = 'App Service Plan name'
+param sku = 'EP1'
+param lawName = '<lawName>'
+param appInsightsName = '<appInsightsName>'
+param storageAccountName = '<storageAccountName>'
+param functionAppName = '<functionApp>'
