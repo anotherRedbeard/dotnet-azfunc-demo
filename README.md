@@ -9,10 +9,11 @@ This repository contains a demo project for Azure Functions using .NET 8.0. The 
 - [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local)
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+- [Azurite](https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio%2Cblob-storage) to emulate my storage account locally
 
 ## Tech I'm using
 
-- [bicep](https://github.com/anotherRedbeard/apimdemo-environment/tree/main/iac/bicep) to implement the GenAI features as well as general infrastructure to support everything else.
+- [Bicep Azure Verified Modules](https://azure.github.io/Azure-Verified-Modules/indexes/bicep/) to implement the IaC to support everything I need to demo this.
 - *Coming Soon* [Github Actions](https://docs.github.com/en/actions/about-github-actions/understanding-github-actions) - This will be used to automatically deploy everything on commit instead of having to manually run the `deploy.<env>.sh` script.
 
 ### Building the Project

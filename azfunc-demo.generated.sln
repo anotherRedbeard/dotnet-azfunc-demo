@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "azfunc-demo", "azfunc-demo.csproj", "{6CBF3AD6-903B-4213-9F11-ECB89A6A4BEC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "obj", "obj", "{BC13817D-59C5-44C2-AB30-3A0EFF7947B9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "release", "release", "{774EA918-224C-429D-B320-AEE86EBB309A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "net8.0", "net8.0", "{0A8B020E-FBCD-4617-BFD7-3B64F023D970}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkerExtensions", "obj\release\net8.0\WorkerExtensions\WorkerExtensions.csproj", "{03B0E3E9-B0BD-40FC-8F2A-386356FA4329}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6CBF3AD6-903B-4213-9F11-ECB89A6A4BEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CBF3AD6-903B-4213-9F11-ECB89A6A4BEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CBF3AD6-903B-4213-9F11-ECB89A6A4BEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CBF3AD6-903B-4213-9F11-ECB89A6A4BEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03B0E3E9-B0BD-40FC-8F2A-386356FA4329}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03B0E3E9-B0BD-40FC-8F2A-386356FA4329}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03B0E3E9-B0BD-40FC-8F2A-386356FA4329}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03B0E3E9-B0BD-40FC-8F2A-386356FA4329}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{774EA918-224C-429D-B320-AEE86EBB309A} = {BC13817D-59C5-44C2-AB30-3A0EFF7947B9}
+		{0A8B020E-FBCD-4617-BFD7-3B64F023D970} = {774EA918-224C-429D-B320-AEE86EBB309A}
+		{03B0E3E9-B0BD-40FC-8F2A-386356FA4329} = {0A8B020E-FBCD-4617-BFD7-3B64F023D970}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ED241B7C-4E68-4153-935D-35A6AA0908CC}
+	EndGlobalSection
+EndGlobal
