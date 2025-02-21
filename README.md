@@ -70,6 +70,10 @@ The logging configuration is set in `Program.cs`.  This is to represent how you 
 
 Here I am just using the base code with all the different levels of log messages to show they are displayed in both the console output and the trace table in Application Insights.
 
+### Setting up secure webhook for Azure Monitor ActionGroup
+
+I have created a [powershell script](./secureWebhookSetup.ps1) that will setup the app role and `Azns AAD Webhook` Service Principal and assign the role to it so you can setup a secure webhook for your Azure Monitor ActionGroup.
+
 ### License
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.

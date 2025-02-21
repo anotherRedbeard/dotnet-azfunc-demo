@@ -4,6 +4,7 @@
 # all dev bicepparm files
 /**/*.*.bicepparam
 deploy.*.sh
+*.dev.ps1
 
 # Azure Functions localsettings file
 local.settings.json
