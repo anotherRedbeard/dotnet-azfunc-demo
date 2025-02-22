@@ -72,7 +72,7 @@ Here I am just using the base code with all the different levels of log messages
 
 ### Setting up secure webhook for Azure Monitor ActionGroup
 
-I have created a [powershell script](./secureWebhookSetup.ps1) that will setup the app role and `Azns AAD Webhook` Service Principal and assign the role to it so you can setup a secure webhook for your Azure Monitor ActionGroup.
+I have created a [powershell script](./secureWebhookSetup.ps1) that will setup the app role and `Azns AAD Webhook` Service Principal and assign the role to it so you can setup a secure webhook for your Azure Monitor ActionGroup.  To see the full how-to, please check out my blog post [here](https://techcommunity.microsoft.com/blog/healthcareandlifesciencesblog/setting-up-a-secure-webhook-in-an-azure-monitor-action-group/4384445).
 
 ### License
 
