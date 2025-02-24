@@ -17,7 +17,9 @@ $myActionGroupServicePrincipal = Get-MgServicePrincipal -Filter "appId eq '$azur
 Write-Host "myActionGroupServicePrincipal: " $myActionGroupServicePrincipal.Id
 
 Write-Host "Getting my app registration service principal.."
-$myServicePrincipal = Get-MgServicePrincipal -Filter "appId eq '$($myApp.AppId)'"
+$myAppReg = Get-MgApplication -Filter "id eq '$myMicrosoftEntraAppRegistrationObjectId'"
+Write-Host "myAppReg: " $myAppReg.AppId
+$myServicePrincipal = Get-MgServicePrincipal -Filter "appId eq '$($myAppReg.AppId)'"
 Write-Host "myServicePrincipalId: " $myServicePrincipal.Id
 
 # Create the required service principal if it does not exist
