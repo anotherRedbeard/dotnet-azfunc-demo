@@ -5,12 +5,12 @@ Write-Host "====================================================================
 $scopes = "Application.ReadWrite.All"
 $myTenantId = "<your tenant id>"
 $myMicrosoftEntraAppRegistrationObjectId = "<your app registration object id>"
-$actionGroupRoleName = "<your action group role name>"
+$myActionGroupRoleName = "<your action group role name>"
 $azureMonitorActionGroupsAppId = "461e8683-5575-4561-ac7f-899cc907d62a" # Required. Do not change.
 
 Connect-MgGraph -Scopes $scopes -TenantId $myTenantId
 
-$myAppRoleId = (Get-MgApplication -ApplicationId $myMicrosoftEntraAppRegistrationObjectId).AppRoles | Where-Object { $_.Value -eq $actionGroupRoleName } | Select-Object -ExpandProperty Id
+$myAppRoleId = (Get-MgApplication -ApplicationId $myMicrosoftEntraAppRegistrationObjectId).AppRoles | Where-Object { $_.Value -eq $myActionGroupRoleName } | Select-Object -ExpandProperty Id
 Write-Host "myAppRoleId: " $myAppRoleId
 
 Write-Host "Checking for required service principal.."
