@@ -9,6 +9,8 @@ var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
     // Configure services for dependency injection
     .ConfigureServices(services => {
+        // Add HttpClient factory for making HTTP calls
+        services.AddHttpClient();
         // Add Application Insights telemetry for worker service
         services.AddApplicationInsightsTelemetryWorkerService();
         // Configure Application Insights for Azure Functions
