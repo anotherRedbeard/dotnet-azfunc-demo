@@ -10,6 +10,9 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 env:
   AZURE_FUNCTIONAPP_NAME: 'red-scus-dotnetfunc-app'
   RESOURCE_GROUP: 'red-scus-dotnet-azfuncdemo-rg'
