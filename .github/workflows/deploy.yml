@@ -12,7 +12,14 @@ on:
 env:
   AZURE_FUNCTIONAPP_NAME: 'red-scus-dotnetfunc-app'
   RESOURCE_GROUP: 'red-scus-dotnet-azfuncdemo-rg'
+  LOCATION: 'southcentralus'
   DOTNET_VERSION: '8.0.x'
+  # Bicep parameters (non-sensitive)
+  ASP_NAME: 'dotnet-func-asp'
+  SKU: 'EP1'
+  LAW_NAME: 'red-scus-dotnetfunc-law'
+  APP_INSIGHTS_NAME: 'red-scus-dotnetfunc-appinsights'
+  STORAGE_ACCOUNT_NAME: 'redscusazfuncdemo582'
 
 jobs:
   build:
@@ -57,10 +64,19 @@ jobs:
         with:
           scope: subscription
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          region: southcentralus
+          region: ${{ env.LOCATION }}
           deploymentName: dotnetcore-azfunction-deploy
           template: ./iac/bicep/create-dotnet-function-all.bicep
-          parameters: ./iac/bicep/create-dotnet-function-all.dev.bicepparam
+          parameters: >
+            subscriptionId=${{ secrets.AZURE_SUBSCRIPTION_ID }}
+            rgName=${{ env.RESOURCE_GROUP }}
+            location=${{ env.LOCATION }}
+            aspName=${{ env.ASP_NAME }}
+            sku=${{ env.SKU }}
+            lawName=${{ env.LAW_NAME }}
+            appInsightsName=${{ env.APP_INSIGHTS_NAME }}
+            storageAccountName=${{ env.STORAGE_ACCOUNT_NAME }}
+            functionAppName=${{ env.AZURE_FUNCTIONAPP_NAME }}
 
   deploy-function:
     runs-on: ubuntu-latest
