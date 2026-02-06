@@ -11,6 +11,49 @@
     }
   ],
   "paths": {
+    "/GraphMe": {
+      "get": {
+        "tags": [
+          "graph"
+        ],
+        "summary": "Get Graph /me",
+        "description": "Calls Microsoft Graph API /me endpoint using the provided Authorization header",
+        "operationId": "GraphMe",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Bearer token for Microsoft Graph API",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile from Microsoft Graph",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid Authorization header",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/HttpTrigger1": {
       "get": {
         "tags": [
@@ -36,6 +79,28 @@
               "text/plain": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/oauth-protected-resource": {
+      "get": {
+        "tags": [
+          "oauth"
+        ],
+        "summary": "OAuth Protected Resource Metadata",
+        "description": "Returns OAuth 2.0 Protected Resource Metadata",
+        "operationId": "OAuthProtectedResource",
+        "responses": {
+          "200": {
+            "description": "Protected resource metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
                 }
               }
             }
