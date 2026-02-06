@@ -3,6 +3,13 @@ if [ -z "$1" ]; then
     #exit 1
 fi
 
+# Configuration - Replace with your subscription ID
+SUBSCRIPTION_ID="<subscription-id>"
+
+# Set and verify the subscription context
+echo "Setting subscription context..."
+az account set --subscription $SUBSCRIPTION_ID
+
 if [ "$1" == "all" ]; then
     echo "Deploying all"
     az deployment sub create --subscription <subscription-id> --location <location> --name dotnetcore-azfunction-deploy --parameters ./iac/bicep/create-dotnet-function-all.dev.bicepparam 

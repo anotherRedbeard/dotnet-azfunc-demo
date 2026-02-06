@@ -99,6 +99,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.13.0' = {
     name: storageAccountName
     // Non-required parameters
     allowBlobPublicAccess: false
+    allowSharedKeyAccess: true  // Required for connection string auth to work
     location: location
     skuName: 'Standard_LRS'
     networkAcls: {
@@ -126,6 +127,10 @@ module site 'br/public:avm/res/web/site:0.6.0' = {
       AzureFunctionsJobHost__logging__logLevel__default: 'Warning'
       FUNCTIONS_EXTENSION_VERSION: '~4'
       FUNCTIONS_WORKER_RUNTIME: 'dotnet-isolated'
+      // For Linux Elastic Premium, WEBSITE_RUN_FROM_PACKAGE=1 is recommended
+      // This allows zip deployment to /home/data/SitePackages
+      // Per: https://learn.microsoft.com/en-us/azure/azure-functions/run-functions-from-deployment-package
+      WEBSITE_RUN_FROM_PACKAGE: '1'
     }
     location: location
     siteConfig: {
