@@ -79,7 +79,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:0.5.0' = {
 module component 'br/public:avm/res/insights/component:0.4.0' = {
   name: 'componentDeployment'
   scope: resourceGroup(rgName)
-  dependsOn: [ resourceGroupResource, workspace ]
+  dependsOn: [ resourceGroupResource ]
   params: {
     // Required parameters
     name: appInsightsName
@@ -115,7 +115,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.13.0' = {
 module site 'br/public:avm/res/web/site:0.6.0' = {
   name: 'siteDeployment'
   scope: resourceGroup(rgName)
-  dependsOn: [ resourceGroupResource, serverfarm, component, storageAccount ]
+  dependsOn: [ resourceGroupResource ]
   params: {
     // Required parameters
     kind: 'functionapp'
