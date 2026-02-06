@@ -1,54 +1,48 @@
-openapi: 3.0.1
-info:
-  title: DotNetFuncDemo API
-  description: Azure Functions Demo API - .NET Isolated Worker
-  version: "1.0"
-servers:
-  - url: https://red-scus-dotnetfunc-app.azurewebsites.net/api
-paths:
-  /httptrigger1:
-    get:
-      operationId: HttpTrigger1-GET
-      summary: HTTP Trigger Function
-      description: Returns a welcome message with incoming HTTP headers
-      parameters:
-        - name: name
-          in: query
-          description: Optional name parameter
-          required: false
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Successful response with headers information
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: |
-                  Hello and Welcome to Azure Functions!
-
-                  Incoming Headers:
-                  Host: red-scus-dotnetfunc-app.azurewebsites.net
-                  User-Agent: curl/8.7.1
-    post:
-      operationId: HttpTrigger1-POST
-      summary: HTTP Trigger Function (POST)
-      description: Returns a welcome message with incoming HTTP headers
-      requestBody:
-        description: Optional request body
-        required: false
-        content:
-          application/json:
-            schema:
-              type: object
-          text/plain:
-            schema:
-              type: string
-      responses:
-        "200":
-          description: Successful response with headers information
-          content:
-            text/plain:
-              schema:
-                type: string
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI Document on Azure Functions",
+    "description": "This is the OpenAPI Document on Azure Functions",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://red-scus-dotnetfunc-app.azurewebsites.net/api"
+    }
+  ],
+  "paths": {
+    "/HttpTrigger1": {
+      "get": {
+        "tags": [
+          "greeting"
+        ],
+        "summary": "HTTP Trigger Function",
+        "description": "Returns a welcome message with incoming HTTP headers",
+        "operationId": "HttpTrigger1",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Optional name parameter",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with headers information",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {}
+}
