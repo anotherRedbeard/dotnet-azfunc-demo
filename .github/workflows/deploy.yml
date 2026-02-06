@@ -40,7 +40,7 @@ jobs:
       - name: Create zip package
         run: |
           cd ./publish
-          zip -r ../deployment.zip .
+          zip -r ../deployment.zip . -x "*.pdb"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -99,3 +99,61 @@ jobs:
             --name ${{ env.AZURE_FUNCTIONAPP_NAME }} \
             --resource-group ${{ env.RESOURCE_GROUP }} \
             --src deployment.zip
+
+  update-openapi-spec:
+    runs-on: ubuntu-latest
+    needs: deploy-function
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for function app to be ready
+        run: |
+          echo "Waiting for function app to be ready after deployment..."
+          sleep 30
+
+      - name: Fetch OpenAPI spec from deployed function
+        run: |
+          # Fetch the OpenAPI spec from the deployed function
+          OPENAPI_URL="https://${{ env.AZURE_FUNCTIONAPP_NAME }}.azurewebsites.net/api/openapi/v3.json"
+          
+          echo "Fetching OpenAPI spec from: $OPENAPI_URL"
+          
+          for i in {1..5}; do
+            HTTP_CODE=$(curl -s -o openapi.json -w "%{http_code}" "$OPENAPI_URL")
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "✅ OpenAPI spec fetched successfully"
+              break
+            fi
+            echo "Attempt $i: Got HTTP $HTTP_CODE, retrying in 10s..."
+            sleep 10
+          done
+          
+          if [ ! -f openapi.json ] || [ ! -s openapi.json ]; then
+            echo "⚠️ Could not fetch OpenAPI spec, skipping update"
+            exit 0
+          fi
+          
+          # Install yq for JSON to YAML conversion
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          
+          # Convert to YAML
+          yq -P openapi.json > apim/openapi.yaml
+          echo "✅ OpenAPI spec converted to YAML"
+
+      - name: Check for OpenAPI spec changes
+        id: check-changes
+        run: |
+          git diff --quiet apim/openapi.yaml || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push OpenAPI spec
+        if: steps.check-changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add apim/openapi.yaml
+          git commit -m "chore: auto-update OpenAPI spec [skip ci]"
+          git push

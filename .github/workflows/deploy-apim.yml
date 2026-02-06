@@ -1,0 +1,90 @@
+# APIM Deployment Pipeline
+# This workflow imports an API definition into Azure API Management
+# Uses the same AZURE_CREDENTIALS service principal as the function app deploy
+
+name: Deploy API to APIM
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apim/**'
+  workflow_dispatch:
+    inputs:
+      apim_name:
+        description: 'APIM Instance Name'
+        required: true
+        default: 'your-apim-instance'
+      apim_resource_group:
+        description: 'APIM Resource Group Name'
+        required: true
+        default: 'your-apim-resource-group'
+
+env:
+  # APIM configuration - update these or use workflow_dispatch inputs
+  APIM_NAME: ${{ secrets.APIM_NAME }}
+  APIM_RESOURCE_GROUP: ${{ secrets.APIM_RESOURCE_GROUP }}
+  API_ID: 'dotnetfunc-api'
+
+jobs:
+  deploy-api:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Read API Information
+        id: api-info
+        run: |
+          # Extract values from apiinformation.json
+          API_PATH=$(jq -r '.properties.path' apim/apiinformation.json)
+          API_DISPLAY_NAME=$(jq -r '.properties.displayName' apim/apiinformation.json)
+          API_SERVICE_URL=$(jq -r '.properties.serviceUrl' apim/apiinformation.json)
+          API_DESCRIPTION=$(jq -r '.properties.description' apim/apiinformation.json)
+          SUBSCRIPTION_REQUIRED=$(jq -r '.properties.subscriptionRequired' apim/apiinformation.json)
+          
+          echo "api_path=$API_PATH" >> $GITHUB_OUTPUT
+          echo "api_display_name=$API_DISPLAY_NAME" >> $GITHUB_OUTPUT
+          echo "api_service_url=$API_SERVICE_URL" >> $GITHUB_OUTPUT
+          echo "api_description=$API_DESCRIPTION" >> $GITHUB_OUTPUT
+          echo "subscription_required=$SUBSCRIPTION_REQUIRED" >> $GITHUB_OUTPUT
+
+      - name: Import API to APIM
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            # Import API from OpenAPI spec
+            az apim api import \
+              --resource-group ${{ env.APIM_RESOURCE_GROUP }} \
+              --service-name ${{ env.APIM_NAME }} \
+              --api-id ${{ env.API_ID }} \
+              --path "${{ steps.api-info.outputs.api_path }}" \
+              --display-name "${{ steps.api-info.outputs.api_display_name }}" \
+              --service-url "${{ steps.api-info.outputs.api_service_url }}" \
+              --specification-format OpenApi \
+              --specification-path apim/openapi.yaml \
+              --subscription-required ${{ steps.api-info.outputs.subscription_required }} \
+              --protocols https
+            
+            echo "✅ API successfully imported to APIM"
+
+      - name: Display API URL
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            # Get APIM gateway URL
+            GATEWAY_URL=$(az apim show \
+              --resource-group ${{ env.APIM_RESOURCE_GROUP }} \
+              --name ${{ env.APIM_NAME }} \
+              --query gatewayUrl -o tsv)
+            
+            echo "🚀 API is available at: ${GATEWAY_URL}/${{ steps.api-info.outputs.api_path }}/httptrigger1"
