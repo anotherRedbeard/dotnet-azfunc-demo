@@ -1,6 +1,6 @@
 # DotNet Azure Functions Demo
 
-This repository contains a demo project for Azure Functions using .NET 8.0. The project includes an HTTP trigger function, infrastructure deployment scripts, and configuration files.
+This repository contains a demo project for Azure Functions using .NET 8.0. The project includes an HTTP trigger function, Bicep infrastructure-as-code templates, a GitHub Actions CI/CD workflow, and configuration files.
 
 ## Getting Started
 
@@ -35,23 +35,7 @@ func start
 
 ### Deploying the Project to Azure
 
-#### Option 1: GitHub Actions CI/CD
-
-The recommended way to deploy is using the GitHub Actions workflow. See [GitHub Actions CI/CD](#github-actions-cicd) section below for setup instructions.
-
-#### Option 2: Manual Deployment Script
-
-I have created a generic `deploy.sh` that can be used to deploy the project to azure by creating your own `deploy.<env>.sh` file.  The simplest thing to do is to copy the `deploy.sh` to a new file based on the environment you are working with, so something like `deploy.sandbox.sh` and then replace all the values that are enclosed in `<angle-brackets>`.
-
-This script will run the [Bicep modules](https://github.com/anotherRedbeard/dotnet-azfunc-demo/blob/main/iac/bicep) needed to create all the required resources to run this example and it will deploy the code to azure using the `azure functionapp publish` cli command.  It supports three options: all, infra, and function.
-
-```sh
-./deploy.sh all|infra|function
-```
-
-- `all`: Deploys both the infrastructure and the function.
-- `infra`: Deploys only the infrastructure.
-- `function`: Deploys only the function.
+Deployment is handled via the GitHub Actions CI/CD workflow. Pushing to `main` (or manually triggering the workflow) will automatically build, deploy infrastructure, deploy the function, update the OpenAPI spec, and optionally import the API into APIM. See [GitHub Actions CI/CD](#github-actions-cicd) section below for setup instructions.
 
 ### Configuration
 
@@ -125,13 +109,11 @@ The workflow runs automatically on:
 
 ### Workflow Steps
 
-1. **Build**: Restores, builds, and publishes the .NET project
-2. **Deploy Infrastructure**: Deploys Bicep templates via ARM deployment
-3. **Deploy Function**: 
-   - Sets `WEBSITE_RUN_FROM_PACKAGE=1`
-   - Uploads zip package via `config-zip`
-   - Syncs function triggers
-   - Verifies function registration
+1. **Build**: Restores, builds, and publishes the .NET project as a zip package
+2. **Deploy Infrastructure**: Deploys Bicep templates via ARM subscription-level deployment
+3. **Deploy Function**: Uploads the zip package to Azure Functions via `az functionapp deployment source config-zip`
+4. **Update OpenAPI Spec**: Fetches the OpenAPI spec from the deployed function and commits any changes back to the repo
+5. **Deploy APIM** *(conditional)*: If the OpenAPI spec changed and APIM secrets are configured, imports the updated spec into Azure API Management
 
 ### License
 
