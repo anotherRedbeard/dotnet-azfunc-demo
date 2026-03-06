@@ -33,7 +33,7 @@ param storageAccountName string = '<storageAccountName>'
 param functionAppName string = '<functionApp>'
 
 //create resource group
-module resourceGroupResource 'br/public:avm/res/resources/resource-group:0.3.0' = {
+module resourceGroupResource 'br/public:avm/res/resources/resource-group:0.4.3' = {
   name: 'createResourceGroup'
   scope: subscription(subscriptionId)
   params: {
@@ -43,7 +43,7 @@ module resourceGroupResource 'br/public:avm/res/resources/resource-group:0.3.0' 
 }
 
 //app service plan
-module serverfarm 'br/public:avm/res/web/serverfarm:0.2.2' = {
+module serverfarm 'br/public:avm/res/web/serverfarm:0.7.0' = {
   scope: resourceGroup(rgName)
   dependsOn: [ resourceGroupResource ]
   name: 'serverfarmDeployment'
@@ -63,7 +63,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:0.2.2' = {
 }
 
 //log analytics workspace resource
-module workspace 'br/public:avm/res/operational-insights/workspace:0.5.0' = {
+module workspace 'br/public:avm/res/operational-insights/workspace:0.15.0' = {
   name: 'workspaceDeployment'
   scope: resourceGroup(rgName)
   dependsOn: [ resourceGroupResource ]
@@ -76,7 +76,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:0.5.0' = {
 }
 
 //app insights resource
-module component 'br/public:avm/res/insights/component:0.4.0' = {
+module component 'br/public:avm/res/insights/component:0.7.1' = {
   name: 'componentDeployment'
   scope: resourceGroup(rgName)
   dependsOn: [ resourceGroupResource ]
@@ -90,7 +90,7 @@ module component 'br/public:avm/res/insights/component:0.4.0' = {
 }
 
 //create storage account
-module storageAccount 'br/public:avm/res/storage/storage-account:0.13.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
   name: 'storageAccountDeployment'
   scope: resourceGroup(rgName)
   dependsOn: [ resourceGroupResource ]
@@ -112,27 +112,16 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.13.0' = {
 }
 
 //create function app
-module site 'br/public:avm/res/web/site:0.6.0' = {
+module site 'br/public:avm/res/web/site:0.22.0' = {
   name: 'siteDeployment'
   scope: resourceGroup(rgName)
   dependsOn: [ resourceGroupResource ]
   params: {
     // Required parameters
-    kind: 'functionapp'
+    kind: 'functionapp,linux'
     name: functionAppName
     serverFarmResourceId: serverfarm.outputs.resourceId
     // Non-required parameters
-    appInsightResourceId: component.outputs.resourceId
-    appSettingsKeyValuePairs: {
-      AzureFunctionsJobHost__logging__logLevel__default: 'Warning'
-      FUNCTIONS_EXTENSION_VERSION: '~4'
-      FUNCTIONS_WORKER_RUNTIME: 'dotnet-isolated'
-      // For Linux Elastic Premium, WEBSITE_RUN_FROM_PACKAGE=1 is recommended
-      // This allows zip deployment to /home/data/SitePackages
-      // Per: https://learn.microsoft.com/en-us/azure/azure-functions/run-functions-from-deployment-package
-      WEBSITE_RUN_FROM_PACKAGE: '1'
-    }
-    location: location
     siteConfig: {
       numberOfWorkers: 1
       linuxFxVersion: 'DOTNET-ISOLATED|8.0'
@@ -140,7 +129,23 @@ module site 'br/public:avm/res/web/site:0.6.0' = {
       use32BitWorkerProcess: false
       minimumElasticInstanceCount: 1
     }
-    storageAccountResourceId: storageAccount.outputs.resourceId
-    storageAccountUseIdentityAuthentication: false
+    location: location
+    configs: [
+      {
+        name: 'appsettings'
+        applicationInsightResourceId: component.outputs.resourceId
+        storageAccountResourceId: storageAccount.outputs.resourceId
+        storageAccountUseIdentityAuthentication: false
+        properties: {
+          AzureFunctionsJobHost__logging__logLevel__default: 'Warning'
+          FUNCTIONS_EXTENSION_VERSION: '~4'
+          FUNCTIONS_WORKER_RUNTIME: 'dotnet-isolated'
+          // For Linux Elastic Premium, WEBSITE_RUN_FROM_PACKAGE=1 is recommended
+          // This allows zip deployment to /home/data/SitePackages
+          // Per: https://learn.microsoft.com/en-us/azure/azure-functions/run-functions-from-deployment-package
+          WEBSITE_RUN_FROM_PACKAGE: '1'
+        }
+      }
+    ]
   }
 }
